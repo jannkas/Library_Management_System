@@ -1,0 +1,120 @@
+# ---------- CREATE Commands ----------
+
+---------- new user into the users collection: ----------
+
+INSERT {
+  "_key": "U005",
+  "first_name": "Oliver",
+  "last_name": "Twist",
+  "date_of_birth": "1838-01-01",
+  "user_email": "oliver@twist.com",
+  "phone_number": "12345678"
+} INTO users
+
+# ---------- Insert new book ---------- 
+INSERT {
+  "_key": "B005",
+  "book_title": "Brave New World",
+  "isbn": "9780060850524",
+  "publisher": {
+    "_key": "P005",
+    "name": "Chatto & Windus",
+    "country": "United Kingdom",
+    "founded_year": 1855
+  },
+  "category_fk": {
+    "_key": "C005",
+    "category_name": "Science Fiction"
+  },
+  "author": {
+    "_key": "A005",
+    "first_name": "Aldous",
+    "last_name": "Huxley"
+  },
+  "publication_year": 1932
+} INTO books
+
+# ---------- Add a new borrowed book ---------- 
+INSERT {
+  "_key": "B005",
+  "user_fk": {
+    "_key": "U006",
+    "first_name": "Sophia",
+    "last_name": "Andersen",
+    "user_email": "sophia.andersen@example.com",
+    "phone_number": "56789012"
+  },
+  "book_fk": {
+    "_key": "5",
+    "book_title": "Brave New World",
+    "isbn": "9780060850524",
+    "author": {
+      "_key": "A005",
+      "first_name": "Aldous",
+      "last_name": "Huxley"
+    }
+  },
+  "borrow_date": "2024-12-01",
+  "due_date": "2024-12-15",
+  "return_date": null
+} INTO borrowed_books
+
+# /////////////////// READ Commands ///////////////////
+
+# ---------- Returns all borrowed_books by user_id ----------
+
+FOR b IN borrowed_books
+  FILTER b.user_fk._key == "U001"
+  RETURN b
+
+# ---------- Retrieve all books in a special category ----------
+
+FOR b IN books
+  FILTER b.category_fk._key == "C001"
+  RETURN b
+
+# ---------- search for a book by title ----------
+
+FOR b IN books
+  FILTER CONTAINS(b.book_title, "1984")
+  RETURN b
+
+# /////////////////// UPDATE Commands ///////////////////
+
+# ---------- update user contact information ----------
+FOR u IN users
+  FILTER u._key == "U001"
+  UPDATE u WITH { 
+    "phone_number": "87654321", 
+    "user_email": "alice.newemail@example.com" 
+  } IN users
+
+# ---------- Mark a book as returned ----------
+FOR u IN users
+  FILTER u._key == "U001"
+  UPDATE u WITH { 
+    "phone_number": "87654321", 
+    "user_email": "alice.newemail@example.com" 
+  } IN users
+
+# ---------- Change Book Category ----------
+FOR b IN books
+  FILTER b._key == "1"
+  UPDATE b WITH { 
+    "category_fk": { 
+      "_key": "C005", 
+      "category_name": "Science Fiction" 
+    } 
+  } IN books
+
+
+# /////////////////// DELETE Commands ///////////////////
+
+# ---------- Delete a user ----------
+REMOVE { "_key": "U005" } IN users
+
+# ---------- Remove a book from borrowed list ----------
+REMOVE { "_key": "B003" } IN borrowed_books
+
+# ---------- Delete a book ----------
+REMOVE { "_key": "B002" } IN books

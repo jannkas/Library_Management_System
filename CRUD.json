@@ -1,0 +1,44 @@
+INSERT {
+    "_key": "B005",
+    "book_title": "The Catcher in the Rye",
+    "category_fk": {
+        "_key": "C004",
+        "category_name": "Classic Literature"
+    },
+    "isbn": "7263547251939",
+    "publication_year": "1951",
+    "publisher_fk": {
+        "_key": "P004",
+        "publisher_name": "T. Egerton"
+    }
+} INTO books
+
+to add a connection between book and author
+{
+    "_key": "BA005",
+    "author_fk": {
+        "_key": "A005",
+        "first_name": "J.D.",
+        "last_name": "Salinger"
+    },
+    "book_fk": {
+        "_key": "B005",
+        "book_title": "Pride and Prejudice",
+        "isbn": "9780141439518"
+    }
+}
+
+------------------------------------------------------------
+
+FOR book IN books
+    RETURN book
+
+------------------------------------------------------------
+
+UPDATE "B005" WITH {
+    "book_title": "The Catcher in the Rye - Updated Edition",
+    "publication_year": 2020
+} IN books
+
+------------------------------------------------------------
+REMOVE "B005" IN books

@@ -1,0 +1,47 @@
+# Find All Authors of Books Borrowed by User3
+FOR v, e IN 2..2 OUTBOUND 'users/user3' GRAPH 'library_graph'
+  FILTER IS_SAME_COLLECTION('authors', v)
+  RETURN v
+
+
+# Show the books that User1 has borrowed and on which date
+FOR v, e IN 1..1 OUTBOUND 'users/user1' GRAPH 'library_graph'
+  RETURN {
+    book: v,
+    borrow_date: e.borrow_date
+  }
+
+# Find all the users who borrowed book3
+FOR v, e IN 1..1 INBOUND 'books/book1' GRAPH 'library_graph'
+  RETURN {
+    user: v,
+    borrow_date: e.borrow_date
+  }
+
+  # FINDS ALL BOOKS BORROWED BY USER1, REGARDLESS OF EDGE DIRECTION
+  FOR v, e IN 1..1 ANY 'users/user1' GRAPH 'library_graph'
+  RETURN v
+
+  
+Count how many books User1 has borrowed
+RETURN LENGTH(
+  FOR v, e IN 1..1 OUTBOUND 'users/user1' GRAPH 'library_graph'
+  RETURN v
+)
+
+find all books User1 has borrowed
+FOR v, e IN 1..1 OUTBOUND 'users/user1' GRAPH 'library_graph'
+RETURN {
+  book: v.title,
+  borrow_date: e.borrow_date
+}
+
+
+INSERTING A NEW BOOK:
+INSERT {
+_key: "book4",
+genre: "Horror",
+publication_year: "1901",
+title: 1984
+} INTO books
+

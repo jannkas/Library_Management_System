@@ -1,0 +1,11 @@
+-- Query 1: Search for books containing the title
+
+FOR doc IN books_search
+SEARCH PHRASE(doc.book_title, "1984", "text_en")
+RETURN doc
+
+-- Query 2: Search for books containing a specific letter
+
+FOR doc IN books
+FILTER CONTAINS(LOWER(doc.book_title), "t")
+RETURN doc
